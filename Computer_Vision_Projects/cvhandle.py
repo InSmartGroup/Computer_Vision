@@ -1,0 +1,95 @@
+"""
+This script contains useful functions to works with the OpenCV library.
+It is being constantly revised and updated alongside with the workflow.
+"""
+import cv2
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+import cvzone
+
+
+def img_show(name, image, scale_x=None, scale_y=None):
+    """Syntax: (name, image, scale_x, scale_y)
+    name is the desired name displayed in the window
+    image is the source input image
+    scale_x is the image width scaling factor
+    scale_y is the image height scaling factor"""
+
+    if scale_x is not None and scale_y is not None:
+        image = cv2.resize(image, None, fx=scale_x, fy=scale_y)
+
+    cv2.imshow(name, image)
+    key = cv2.waitKey(0)
+
+    if key == 27 or key == ord('q') or key == ord('Q'):
+        cv2.destroyAllWindows()
+
+
+def img_convert(image, in_color=None, out_color=None):
+    """Syntax: (image, in_color, out_color)
+    image is the source input image
+    in_color is the color space of the input image
+    out_color is the desired color space of the output image"""
+
+    if in_color == 'bgr' and out_color == 'rgb':
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    elif in_color == 'rgb' and out_color == 'bgr':
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+    elif in_color == 'hsv' and out_color == 'rgb':
+        image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
+
+    elif in_color == 'hsv' and out_color == 'bgr':
+        image = cv2.cvtColor(image, cv2.COLOR_HSV2BGR)
+
+    elif in_color == 'rgb' and out_color == 'hsv':
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+
+    elif in_color == 'bgr' and out_color == 'hsv':
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    elif in_color == 'bgr' and out_color == 'gray':
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    elif in_color == 'rgb' and out_color == 'gray':
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+    elif in_color == 'gray' and out_color == 'rgb':
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
+    elif in_color == 'gray' and out_color == 'bgr':
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
+    return image
+
+
+def img_transform(image, operation=None, param1=None, param2=None, param3=None, param4=None):
+    """Syntax: (image, operation, param1, param2, param3, param4)
+    image is the source input image
+    operation is the desired operation name
+    Available operations: 'threshold', 'adaptive_threshold', 'resize', 'flip'
+    Pass each argument in the same order as if using the needed OpenCV function"""
+
+    if operation == 'threshold' and param3 == 'binary':
+        retval, image = cv2.threshold(image, param1, param2, cv2.THRESH_BINARY)
+
+    elif operation == 'threshold' and param3 == 'binary_inv':
+        retval, image = cv2.threshold(image, param1, param2, cv2.THRESH_BINARY_INV)
+
+    elif operation == 'adaptive_threshold' and param2 == 'binary':
+        image = cv2.adaptiveThreshold(image, param1, cv2.ADAPTIVE_THRESH_MEAN_C,
+                                      cv2.THRESH_BINARY, param3, param4)
+
+    elif operation == 'adaptive_threshold' and param2 == 'binary_inv':
+        image = cv2.adaptiveThreshold(image, param1, cv2.ADAPTIVE_THRESH_MEAN_C,
+                                      cv2.THRESH_BINARY_INV, param3, param4)
+
+    elif operation == 'resize':
+        image = cv2.resize(image, None, fx=param1, fy=param2)
+
+    elif operation == 'flip':
+        image = cv2.flip(image, param1)
+
+    return image
