@@ -35,8 +35,26 @@ def img_convert(image, in_color=None, out_color=None):
     if in_color == 'bgr' and out_color == 'rgb':
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
+    elif in_color == 'bgr' and out_color == 'rgba':
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
+
+    elif in_color == 'bgra' and out_color == 'rgb':
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+
+    elif in_color == 'bgra' and out_color == 'rgba':
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGBA)
+
     elif in_color == 'rgb' and out_color == 'bgr':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+    elif in_color == 'rgb' and out_color == 'bgra':
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGRA)
+
+    elif in_color == 'rgba' and out_color == 'bgr':
+        image = cv2.cvtColor(image, cv2.COLOR_RGBA2BGR)
+
+    elif in_color == 'rgba' and out_color == 'bgra':
+        image = cv2.cvtColor(image, cv2.COLOR_RGBA2BGRA)
 
     elif in_color == 'hsv' and out_color == 'rgb':
         image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
@@ -53,14 +71,26 @@ def img_convert(image, in_color=None, out_color=None):
     elif in_color == 'bgr' and out_color == 'gray':
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+    elif in_color == 'bgra' and out_color == 'gray':
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2GRAY)
+
     elif in_color == 'rgb' and out_color == 'gray':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+    elif in_color == 'rgba' and out_color == 'gray':
+        image = cv2.cvtColor(image, cv2.COLOR_RGBA2GRAY)
 
     elif in_color == 'gray' and out_color == 'rgb':
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
+    elif in_color == 'gray' and out_color == 'rgba':
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA)
+
     elif in_color == 'gray' and out_color == 'bgr':
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
+    elif in_color == 'gray' and out_color == 'bgra':
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGRA)
 
     return image
 
@@ -93,3 +123,16 @@ def img_transform(image, operation=None, param1=None, param2=None, param3=None, 
         image = cv2.flip(image, param1)
 
     return image
+
+
+def img_getinfo(image):
+    """Prints out general information about the input image"""
+
+    print(f"Image shape: {image.shape}")
+
+    if len(image.shape) == 3:
+        print(f"Color channels: {image.shape[2]}")
+    elif len(image.shape) < 3:
+        print("The image is binary, no color channels")
+
+    print(f"Image data type: {image.dtype}")
