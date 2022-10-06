@@ -136,3 +136,28 @@ def img_getinfo(image):
         print("The image is binary, no color channels")
 
     print(f"Image data type: {image.dtype}")
+    print()
+
+
+def img_bitwise(image1, image2, operation=None, mask=None):
+    """Syntax: (image1, image2, operation, mask)
+    image1 is the first input image
+    image2 is the second input image
+    operation is the desired operation name
+    mask is the image mask
+    Available operations: 'and', 'or', 'not', 'xor'"""
+
+    if operation == 'and':
+        result = cv2.bitwise_and(image1, image2, mask=mask)
+
+    elif operation == 'or':
+        result = cv2.bitwise_or(image1, image2, mask=mask)
+
+    elif operation == 'not':
+        result = cv2.bitwise_not(image1, image2, mask=mask)
+
+    elif operation == 'xor':
+        result = cv2.bitwise_xor(image1, image2, mask=mask)
+
+    return result
+
