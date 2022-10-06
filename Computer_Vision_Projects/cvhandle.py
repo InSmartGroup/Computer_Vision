@@ -161,3 +161,8 @@ def img_bitwise(image1, image2, operation=None, mask=None):
 
     return result
 
+
+def img_morph(image, operarion=None, param1=None, param2=None, param3=None):
+    """Syntax: (image, operation, param1, param2, param3)"""
+
+    pass
