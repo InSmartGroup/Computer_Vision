@@ -38,6 +38,9 @@ def img_convert(image, in_color=None, out_color=None):
     elif in_color == 'bgr' and out_color == 'rgba':
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
 
+    elif in_color == 'bgr' and out_color == 'bgra':
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
+
     elif in_color == 'bgra' and out_color == 'rgb':
         image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
 
@@ -46,6 +49,9 @@ def img_convert(image, in_color=None, out_color=None):
 
     elif in_color == 'rgb' and out_color == 'bgr':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+    elif in_color == 'rgb' and out_color == 'rgba':
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
 
     elif in_color == 'rgb' and out_color == 'bgra':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGRA)
@@ -58,6 +64,10 @@ def img_convert(image, in_color=None, out_color=None):
 
     elif in_color == 'hsv' and out_color == 'rgb':
         image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
+
+    elif in_color == 'hsv' and out_color == 'gray':
+        image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
     elif in_color == 'hsv' and out_color == 'bgr':
         image = cv2.cvtColor(image, cv2.COLOR_HSV2BGR)
@@ -128,12 +138,13 @@ def img_transform(image, operation=None, param1=None, param2=None, param3=None, 
 def img_getinfo(image):
     """Prints out general information about the input image"""
 
-    print(f"Image shape: {image.shape}")
+    print(f"Image width: {image.shape[1]}")
+    print(f"Image height: {image.shape[0]}")
 
-    if len(image.shape) == 3:
+    if len(image.shape) >= 3:
         print(f"Color channels: {image.shape[2]}")
     elif len(image.shape) < 3:
-        print("The image is binary, no color channels")
+        print("The image is binary.")
 
     print(f"Image data type: {image.dtype}")
     print()
