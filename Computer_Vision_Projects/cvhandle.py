@@ -189,6 +189,44 @@ def img_bitwise(image1, image2, operation=None, mask=None):
     return result
 
 
+def img_edges(image, operation=None, param1=None, param2=None, param3=None, param4=None):
+    """Syntax: (image, operation, param1, param2, param3, param4)
+    image is the source input image
+    operation is the desired operation name
+    Available operations: 'canny', 'sobel_x', 'sobel_y', 'sobel'
+    It's also possible to pass 'normalize' as a 3rd argument when using all Sobel functions
+    Pass each argument in the same order as if using the needed OpenCV function"""
+    if operation == 'canny':
+        image = cv2.Canny(image, threshold1=param1, threshold2=param2,
+                          edges=param3, apertureSize=param4)
+
+    elif operation == 'sobel_x':
+        image = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=param1)
+
+        if param2 == 'normalize':
+            image = image - image.min()
+            image = image / image.max()
+            image = (image * 255).astype(np.uint8)
+
+    elif operation == 'sobel_y':
+        image = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=param1)
+
+        if param2 == 'normalize':
+            image = image - image.min()
+            image = image / image.max()
+            image = (image * 255).astype(np.uint8)
+
+    elif operation == 'sobel':
+        image = cv2.Sobel(image, ddepth=cv2.CV_32F, dx=1, dy=1, ksize=param1)
+
+        if param2 == 'normalize':
+            image = image - image.min()
+            image = image / image.max()
+            image = (image * 255).astype(np.uint8)
+
+    return image
+
+
 def img_morph(image, operation=None, param1=None, param2=None, param3=None):
     """Syntax: (image, operation, param1, param2, param3)"""
 
