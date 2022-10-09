@@ -105,11 +105,11 @@ def img_convert(image, in_color=None, out_color=None):
     return image
 
 
-def img_transform(image, operation=None, param1=None, param2=None, param3=None, param4=None):
+def img_operation(image, operation=None, param1=None, param2=None, param3=None, param4=None):
     """Syntax: (image, operation, param1, param2, param3, param4)
     image is the source input image
     operation is the desired operation name
-    Available operations: 'threshold', 'adaptive_threshold', 'resize', 'flip'
+    Available operations: 'threshold', 'adaptive_threshold', 'median_blur', 'gaussian_blur' 'resize', 'flip'
     Pass each argument in the same order as if using the needed OpenCV function"""
 
     if operation == 'threshold' and param3 == 'binary':
@@ -125,6 +125,12 @@ def img_transform(image, operation=None, param1=None, param2=None, param3=None, 
     elif operation == 'adaptive_threshold' and param2 == 'binary_inv':
         image = cv2.adaptiveThreshold(image, param1, cv2.ADAPTIVE_THRESH_MEAN_C,
                                       cv2.THRESH_BINARY_INV, param3, param4)
+
+    elif operation == 'median_blur':
+        image = cv2.medianBlur(image, param1)
+
+    elif operation == 'gaussian_blur':
+        image = cv2.GaussianBlur(image, param1, param2, param3)
 
     elif operation == 'resize':
         image = cv2.resize(image, None, fx=param1, fy=param2)
