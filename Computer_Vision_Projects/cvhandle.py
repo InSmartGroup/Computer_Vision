@@ -143,11 +143,21 @@ def img_getinfo(image):
 
     if len(image.shape) >= 3:
         print(f"Color channels: {image.shape[2]}")
+        print(f"Channel 1 maximum pixel intensity: {image[:, :, 0].max()}")
+        print(f"Channel 2 maximum pixel intensity: {image[:, :, 1].max()}")
+        print(f"Channel 3 maximum pixel intensity: {image[:, :, 2].max()}")
     elif len(image.shape) < 3:
-        print("The image is binary.")
+        print("Binary image")
+        print(f"Maximum pixel intensity: {image.max()}")
 
     print(f"Image data type: {image.dtype}")
     print()
+
+
+def img_gray3channel(image):
+    """Apply this function to turn a binary grayscale image into a 3-channel image."""
+    image = cv2.merge((image, image, image))
+    return image
 
 
 def img_bitwise(image1, image2, operation=None, mask=None):
