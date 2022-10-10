@@ -231,3 +231,32 @@ def img_morph(image, operation=None, param1=None, param2=None, param3=None):
     """Syntax: (image, operation, param1, param2, param3)"""
 
     pass
+
+
+def img_kernel(operation=None, ksize=None):
+    """Syntax: (operation, ksize)
+    operation is the operation name for which the kernel should be used
+    ksize is the desired size of a kernel
+    Available operations: 'sharpening', 'sepia' or 'vintage'
+    Available kernel sizes: 'small', 'medium', 'large'"""
+    if operation == 'sharpening' and ksize == 'small':
+        kernel = np.array([[0, -1, 0],
+                           [-1, 5, -1],
+                           [0, -1, 0]])
+
+    elif operation == 'sharpening' and ksize == 'medium':
+        kernel = np.array([[0, -2, 0],
+                           [-2, 9, -2],
+                           [0, -2, 0]])
+
+    elif operation == 'sharpening' and ksize == 'large':
+        kernel = np.array([[0, -4, 0],
+                           [-4, 17, -4],
+                           [0, -4, 0]])
+
+    elif operation == 'sepia' or operation == 'vintage':
+        kernel = np.matrix([[0.393, 0.769, 0.189],
+                            [0.349, 0.686, 0.168],
+                            [0.272, 0.534, 0.131]])
+
+    return kernel
