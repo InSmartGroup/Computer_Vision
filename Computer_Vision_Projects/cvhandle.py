@@ -227,6 +227,17 @@ def img_edges(image, operation=None, param1=None, param2=None, param3=None, para
     return image
 
 
+def img2transparent(source, min_thresh=125):
+    image_gray = cv2.cvtColor(source, cv2.COLOR_BGR2GRAY)
+    retval, mask = cv2.threshold(image_gray, min_thresh, 255, cv2.THRESH_BINARY_INV)
+    blue, green, red = cv2.split(source)
+    blue = cv2.bitwise_and(blue, mask)
+    green = cv2.bitwise_and(green, mask)
+    red = cv2.bitwise_and(red, mask)
+    result = cv2.merge((blue, green, red, mask))
+    return result
+
+
 def img_morph(image, operation=None, param1=None, param2=None, param3=None):
     """Syntax: (image, operation, param1, param2, param3)"""
 
