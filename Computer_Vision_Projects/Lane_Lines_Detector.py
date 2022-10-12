@@ -51,7 +51,6 @@ while True:
 
     # Find and draw lines
     contours, hierarchy = cv2.findContours(frame_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    # frame_contours = np.zeros((frame_mask.shape[0], frame_mask.shape[1], 3), dtype='uint8')
     for contour in contours:
         cv2.drawContours(frame, contour, -1, (0, 255, 255), 5, cv2.LINE_AA)
 
@@ -63,7 +62,7 @@ while True:
         break
 
     # Display the video file
-    cv2.imshow('Lane_lines_detector', frame)
+    cv2.imshow('Lane_lines_detector', frame_lines)
 
     # Write the video file
     video_writer.write(frame)
