@@ -228,6 +228,10 @@ def img_edges(image, operation=None, param1=None, param2=None, param3=None, para
 
 
 def img2transparent(source, min_thresh=125):
+    """Converts a 3-channel image to 4-channel transparent.
+    Syntax: (source, min_thresh)
+    source is the source input 3-channel image
+    min_thresh is the minimum threshold value"""
     image_gray = cv2.cvtColor(source, cv2.COLOR_BGR2GRAY)
     retval, mask = cv2.threshold(image_gray, min_thresh, 255, cv2.THRESH_BINARY_INV)
     blue, green, red = cv2.split(source)
