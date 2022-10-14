@@ -242,6 +242,35 @@ def img2transparent(source, min_thresh=125):
     return result
 
 
+def img_draw_grid(source, grid_shape=(5, 5), color=(0, 255, 0), thickness=1):
+    """Syntax: (source, grid_shape, color, thickness)
+    source is the source input image
+    grid_shape is the desired shape of a grid
+    color is the desired color of a grid
+    thickness is the desired grid line thickness
+    Note: pass white color for binary images
+    Note: this function changes the input image"""
+    if len(source.shape) > 2:
+        height, width, _ = source.shape
+    else:
+        height, width = source.shape
+
+    rows, columns = grid_shape
+    dy, dx = int(height / rows), int(width / columns)
+
+    # Vertical lines
+    for x in np.linspace(start=dx, stop=width - dx, num=columns - 1):
+        x = int(round(x))
+        cv2.line(source, (x, 0), (x, height), color=color, thickness=thickness)
+
+    # Horizontal lines
+    for y in np.linspace(start=dy, stop=height - dy, num=rows - 1):
+        y = int(round(y))
+        cv2.line(source, (0, y), (width, y), color=color, thickness=thickness)
+
+    return source
+
+
 def img_morph(image, operation=None, param1=None, param2=None, param3=None):
     """Syntax: (image, operation, param1, param2, param3)"""
 
