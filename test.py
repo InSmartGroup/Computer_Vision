@@ -1,60 +1,40 @@
 import cv2
 import numpy as np
 
-video_cap = cv2.VideoCapture(1)
-frame_width = video_cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-frame_height = video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-if video_cap.isOpened():
-    print('Yes')
-else:
-    print('No')
+# Read the source image
+source_image = cv2.imread('Images_and_videos//scanned-form.jpg')
 
-codec = cv2.VideoWriter_fourcc(*'FMP4')
-fps = 30
+# Get the source image shape
+if len(source_image.shape) >= 3:
+    height, width, color_channels = source_image.shape
+elif len(source_image.shape) == 2:
+    height, width = source_image.shape
 
-video_writer_1 = cv2.VideoWriter('Original_stream.mp4', codec, fps, (int(frame_width), int(frame_height)))
-video_writer_2 = cv2.VideoWriter('GRAY.mp4', codec, fps, (int(frame_width), int(frame_height)))
-video_writer_3 = cv2.VideoWriter('HSV.mp4', codec, fps, (int(frame_width), int(frame_height)))
+# Resize the source image if it's too large
+if source_image.shape[0] > 2000:
+    source_image = cv2.resize(source_image, None, fx=0.3, fy=0.3)
+elif source_image.shape[0] > 1000:
+    source_image = cv2.resize(source_image, None, fx=0.5, fy=0.5)
+elif source_image.shape[0] > 650:
+    source_image = cv2.resize(source_image, None, fx=0.8, fy=0.8)
 
 while True:
-    has_frame, frame = video_cap.read()
-    if not has_frame:
-        break
+    image_blank = np.zeros((width, height, 3), dtype=np.uint8)
 
-    frame = cv2.flip(frame, 1)
+    # Convert the image to grayscale
+    image_gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
 
-    # Grayscale frames
-    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    frame_gray_EQ = cv2.equalizeHist(frame_gray)
-    frame_gray_EQ = cv2.cvtColor(frame_gray_EQ, cv2.COLOR_GRAY2BGR)
+    # Add some Gaussian blur
+    image_gray_blurred = cv2.GaussianBlur(image_gray, (5, 5), 1)
 
-    # HSV frames
-    frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    frame_hsv_EQ = frame_hsv.copy()
-    frame_hsv_EQ[:, :, 2] = cv2.equalizeHist(frame_hsv_EQ[:, :, 2])
-    frame_hsv_EQ_BGR = cv2.cvtColor(frame_hsv_EQ, cv2.COLOR_HSV2BGR)
+    # Create trackbars
+    trackbar_name = 'Trackbars'
+    cv2.namedWindow(trackbar_name)
+    cv2.resizeWindow(trackbar_name, 360, 240)
+    cv2.createTrackbar('Threshold_1', trackbar_name, 200, 255, None)
+    cv2.createTrackbar('Threshold_2', trackbar_name, 200, 255, None)
 
-    # Threshold
-    retval, frame_thresh = cv2.threshold(frame_gray_EQ, 200, 255, cv2.THRESH_BINARY)
+    # Detect edges
+    image_edges = cv2.Canny(image_gray_blurred, )
 
-    # CLAHE histogram equalization
-    clahe = cv2.createCLAHE(clipLimit=7.0, tileGridSize=(20, 20))
-    frame_hsv[:, :, 2] = clahe.apply(frame_hsv_EQ[:, :, 2])
-    frame_hsv_CLAHE = cv2.cvtColor(frame_hsv, cv2.COLOR_HSV2BGR)
 
-    cv2.imshow('Original', frame)
-    cv2.imshow('Test', frame_gray_EQ)
-    cv2.imshow('Test2', frame_hsv_CLAHE)
-    key = cv2.waitKey(1)
-    if key == ord('q'):
-        break
-
-    video_writer_1.write(frame)
-    video_writer_2.write(frame_gray_EQ)
-    video_writer_3.write(frame_hsv_CLAHE)
-
-cv2.destroyAllWindows()
-video_cap.release()
-video_writer_1.release()
-video_writer_2.release()
-video_writer_3.release()
