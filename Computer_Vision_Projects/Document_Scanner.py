@@ -24,9 +24,6 @@ else:
 # Convert the source image to grayscale
 image_gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
 
-# Apply some Gaussian blur to the grayscale image
-# image_gray = cv2.GaussianBlur(image_gray, (3, 3), 1)
-
 # Threshold the image
 image_thresh = cv2.inRange(image_gray, 200, 255)
 
