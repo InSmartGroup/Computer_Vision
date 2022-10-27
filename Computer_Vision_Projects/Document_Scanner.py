@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Read the source image
-source_image = cv2.imread('..//Images_and_videos//align1.jpg')
+source_image = cv2.imread('..//Images_and_videos//doc3.jpg')
 print(f"Source image shape: {source_image.shape}")
 
 # Resize the source image if it's too large
@@ -11,7 +11,7 @@ if source_image.shape[0] > 2000:
 elif source_image.shape[0] > 1000:
     source_image = cv2.resize(source_image, None, fx=0.5, fy=0.5)
 elif source_image.shape[0] > 650:
-    source_image = cv2.resize(source_image, None, fx=0.8, fy=0.8)
+    source_image = cv2.resize(source_image, None, fx=0.6, fy=0.6)
 
 # Get the size of the source image
 if len(source_image.shape) > 3:
@@ -25,14 +25,20 @@ else:
 image_gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
 
 # Threshold the image
-image_thresh = cv2.inRange(image_gray, 180, 255)
+retval, image_thresh = cv2.threshold(image_gray, 200, 255, cv2.THRESH_BINARY)
 
 # Find all image contours
-contours, hierarchy = cv2.findContours(image_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+contours, hierarchy = cv2.findContours(image_thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
 # If no contours were detected
-if not contours:
-    image_thresh = cv2.inRange(image_gray, 160, 255)
+if contours is None:
+    retval, image_thresh = cv2.threshold(image_gray, 180, 255, cv2.THRESH_BINARY)
+    if contours is None:
+        retval, image_thresh = cv2.threshold(image_gray, 160, 255, cv2.THRESH_BINARY)
+        if contours is None:
+            retval, image_thresh = cv2.threshold(image_gray, 140, 255, cv2.THRESH_BINARY)
+            if contours is None:
+                retval, image_thresh = cv2.threshold(image_gray, 127, 255, cv2.THRESH_BINARY)
 
 # Retrieve only the largest contour
 contour_largest = np.array([])
@@ -55,29 +61,31 @@ image_contours = cv2.drawContours(source_image.copy(), contour_filtered, -1,
 # Create a blank image and specify interest points for both images
 image_blank = np.zeros_like(image_thresh).astype(np.uint8)
 contour_points = np.float32(contour_largest)
-destination_points = np.float32([[0, 0],
+destination_points = np.float32([[width - 1, 0],
+                                 [0, 0],
                                  [0, height - 1],
-                                 [width - 1, height - 1],
-                                 [width - 1, 0]])
+                                 [width - 1, height - 1]])
 
 # Create a warp perspective matrix and warp the source image
 matrix = cv2.getPerspectiveTransform(contour_points, destination_points)
 image_warped = cv2.warpPerspective(source_image, matrix, (width, height))
 
 # Create a typewriter-like image
-image_typewriter = cv2.adaptiveThreshold(cv2.cvtColor(image_warped, cv2.COLOR_BGR2GRAY),
-                                         255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 5, 5)
+image_scan = cv2.adaptiveThreshold(cv2.cvtColor(image_warped, cv2.COLOR_BGR2GRAY),
+                                   255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 5, 5)
 
 # Convert all binary images to BGR
 image_gray = cv2.cvtColor(image_gray, cv2.COLOR_GRAY2BGR)
 image_thresh = cv2.cvtColor(image_thresh, cv2.COLOR_GRAY2BGR)
-image_typewriter = cv2.cvtColor(image_typewriter, cv2.COLOR_GRAY2BGR)
+image_scan = cv2.cvtColor(image_scan, cv2.COLOR_GRAY2BGR)
 
 # Concatenate image processing stages
-images_row = np.hstack([source_image, image_contours, image_warped, image_typewriter])
+images_row_1 = np.hstack([source_image, image_contours])
+images_row_2 = np.hstack([image_warped, image_scan])
+images_stacked = np.vstack([images_row_1, images_row_2])
 
 # Resize the stacked image so it fits the screen
-images_stacked = cv2.resize(images_row, None, fx=0.65, fy=0.65)
+images_stacked = cv2.resize(images_stacked, None, fx=0.65, fy=0.65)
 
 # Display the result
 cv2.imshow('Document Scanner', images_stacked)
