@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Read the source image
-source_image = cv2.imread('../Images_and_videos/scanned-form.jpg')
+source_image = cv2.imread('Images_and_videos/scanned-form.jpg')
 print(f"Source image shape: {source_image.shape}")
 
 # Resize the source image if it's too large
