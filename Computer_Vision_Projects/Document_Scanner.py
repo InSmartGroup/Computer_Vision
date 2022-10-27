@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Read the source image
-source_image = cv2.imread('Images_and_videos/scanned-form.jpg')
+source_image = cv2.imread('..//Images_and_videos//align1.jpg')
 print(f"Source image shape: {source_image.shape}")
 
 # Resize the source image if it's too large
@@ -25,7 +25,7 @@ else:
 image_gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
 
 # Threshold the image
-image_thresh = cv2.inRange(image_gray, 200, 255)
+image_thresh = cv2.inRange(image_gray, 150, 255)
 
 # Find all image contours
 contours, hierarchy = cv2.findContours(image_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -51,10 +51,10 @@ image_contours = cv2.drawContours(source_image.copy(), contour_filtered, -1,
 # Create a blank image and specify interest points for both images
 image_blank = np.zeros_like(image_thresh).astype(np.uint8)
 contour_points = np.float32(contour_largest)
-destination_points = np.float32([[width - 1, 0],
-                                 [0, 0],
+destination_points = np.float32([[0, 0],
                                  [0, height - 1],
-                                 [width - 1, height - 1]])
+                                 [width - 1, height - 1],
+                                 [width - 1, 0]])
 
 # Create a warp perspective matrix and warp the source image
 matrix = cv2.getPerspectiveTransform(contour_points, destination_points)
@@ -62,7 +62,7 @@ image_warped = cv2.warpPerspective(source_image, matrix, (width, height))
 
 # Create a typewriter-like image
 image_typewriter = cv2.adaptiveThreshold(cv2.cvtColor(image_warped, cv2.COLOR_BGR2GRAY),
-                                         255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 5, 3)
+                                         255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 5, 5)
 
 # Convert all binary images to BGR
 image_gray = cv2.cvtColor(image_gray, cv2.COLOR_GRAY2BGR)

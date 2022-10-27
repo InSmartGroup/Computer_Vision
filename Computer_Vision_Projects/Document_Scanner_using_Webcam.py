@@ -34,7 +34,7 @@ while True:
     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Threshold the image
-    retval, frame_thresh = cv2.threshold(frame_gray, 150, 255, cv2.THRESH_BINARY)
+    retval, frame_thresh = cv2.threshold(frame_gray, 200, 255, cv2.THRESH_BINARY)
 
     # Concatenate image processing stages
     frames_row_1 = np.hstack([frame, frame])
@@ -43,6 +43,14 @@ while True:
 
     # Find all image contours
     contours, hierarchy = cv2.findContours(frame_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+    # If no contours were detected
+    if not contours:
+        retval, frame_thresh = cv2.threshold(frame_gray, 180, 255, cv2.THRESH_BINARY)
+        if not contours:
+            retval, frame_thresh = cv2.threshold(frame_gray, 170, 255, cv2.THRESH_BINARY)
+            if not contours:
+                retval, frame_thresh = cv2.threshold(frame_gray, 160, 255, cv2.THRESH_BINARY)
 
     # If any contours were detected
     if contours is not None:
