@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Read the source image
-source_image = cv2.imread('..//Images_and_videos//doc3.jpg')
+source_image = cv2.imread('..//Images_and_videos//scanned-form.jpg')
 print(f"Source image shape: {source_image.shape}")
 
 # Resize the source image if it's too large
@@ -38,7 +38,7 @@ if contours is None:
         if contours is None:
             retval, image_thresh = cv2.threshold(image_gray, 140, 255, cv2.THRESH_BINARY)
             if contours is None:
-                retval, image_thresh = cv2.threshold(image_gray, 127, 255, cv2.THRESH_BINARY)
+                retval, image_thresh = cv2.threshold(image_gray, 100, 255, cv2.THRESH_BINARY)
 
 # Retrieve only the largest contour
 contour_largest = np.array([])
@@ -61,10 +61,18 @@ image_contours = cv2.drawContours(source_image.copy(), contour_filtered, -1,
 # Create a blank image and specify interest points for both images
 image_blank = np.zeros_like(image_thresh).astype(np.uint8)
 contour_points = np.float32(contour_largest)
-destination_points = np.float32([[width - 1, 0],
-                                 [0, 0],
-                                 [0, height - 1],
-                                 [width - 1, height - 1]])
+
+try:
+    destination_points = np.float32([[width - 1, 0],
+                                     [0, 0],
+                                     [0, height - 1],
+                                     [width - 1, height - 1]])
+
+except cv2.error:
+    destination_points = np.float32([[0, 0],
+                                     [width - 1, 0],
+                                     [height - 1, width - 1],
+                                     [0, height - 1]])
 
 # Create a warp perspective matrix and warp the source image
 matrix = cv2.getPerspectiveTransform(contour_points, destination_points)
@@ -89,5 +97,11 @@ images_stacked = cv2.resize(images_stacked, None, fx=0.65, fy=0.65)
 
 # Display the result
 cv2.imshow('Document Scanner', images_stacked)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+# Define keyboard input
+key = cv2.waitKey(0)
+
+if key == 27 or key == ord('q') or key == ord('Q'):
+    cv2.destroyAllWindows()
+elif key == ord('s') or key == ord('S'):
+    cv2.imwrite('Scanned_Document.jpg', images_stacked)
