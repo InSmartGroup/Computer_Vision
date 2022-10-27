@@ -25,10 +25,14 @@ else:
 image_gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
 
 # Threshold the image
-image_thresh = cv2.inRange(image_gray, 150, 255)
+image_thresh = cv2.inRange(image_gray, 180, 255)
 
 # Find all image contours
 contours, hierarchy = cv2.findContours(image_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+# If no contours were detected
+if not contours:
+    image_thresh = cv2.inRange(image_gray, 160, 255)
 
 # Retrieve only the largest contour
 contour_largest = np.array([])
