@@ -41,6 +41,8 @@ if image_input is not None:
 
     # Result
     result = cv2.bitwise_and(image_output, image_output, mask=mask)
+
+    # Convert back to BGR
     result = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
 
     st.image(result, channels='BGR')
